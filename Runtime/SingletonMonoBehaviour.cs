@@ -3,7 +3,7 @@ using UnityEngine;
 namespace AwnUtility
 {
     /// <summary>
-    /// 唯一のグローバルなアクセスポイントを提供するMonoBehaviour。
+    /// 唯一のグローバルなアクセスポイントを提供するMonoBehaviour
     /// </summary>
     /// <typeparam name="T">このクラスの継承先</typeparam>
     public class SingletonMonoBehaviour<T> : MonoBehaviour where T : SingletonMonoBehaviour<T>
@@ -11,7 +11,7 @@ namespace AwnUtility
         private static T instanceCache;
 
         /// <summary>
-        /// インスタンスの参照。存在しない場合は検索・初期化して取得する。
+        /// インスタンスの参照。存在しない場合は検索・初期化して取得する
         /// </summary>
         public static T instance
         {
@@ -31,7 +31,7 @@ namespace AwnUtility
             }
         }
         /// <summary>
-        /// シングルトンの初期化を行う関数。Awake時又はそれ以前にinstanceが参照された時点で呼び出される。
+        /// シングルトンの初期化を行う関数。Awake時又はそれ以前にinstanceが参照された時点で呼び出される
         /// </summary>
         protected virtual void Init() { }
 
