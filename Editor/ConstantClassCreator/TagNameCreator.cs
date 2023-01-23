@@ -10,21 +10,21 @@ namespace AwnUtility.Editor
 {
     public static class TagNameCreator
     {
-        private const string CommandName = "Tools/Create/Tag Name";
-        private const string FilePath = "Assets/TagName.cs";
-        private const string Comment = "タグ名を定数で管理するクラス";
+        private const string CommandName = "Tools/Create/Tag Name Class";
 
         [MenuItem(CommandName)]
         public static void Create()
         {
+            ConstantClassSetting setting = AwnUtilityEditorSettings.instance.tagNameClass;
             ConstantClassCreator.Create<string>(
-                FilePath,
+                setting.filePath,
                 InternalEditorUtility.tags.Select(tag =>
                     new ConstantClassCreator.ConstantField(
                         tag,
                         $"\"{tag}\""
                     )
-                ), Comment);
+                ), 
+                setting.comment);
         }
 
         [MenuItem(CommandName, true)]

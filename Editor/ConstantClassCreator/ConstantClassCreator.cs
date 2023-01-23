@@ -38,9 +38,6 @@ namespace AwnUtility.Editor
 
         public static void Create<TValue>(string path, IEnumerable<ConstantField> fields, string comment = null)
         {
-            if(!CanCreate())
-                return;
-
             string directoryName = Path.GetDirectoryName(path);
             if(!Directory.Exists(directoryName))
                 Directory.CreateDirectory(directoryName);

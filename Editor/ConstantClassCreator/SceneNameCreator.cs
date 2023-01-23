@@ -10,15 +10,14 @@ namespace AwnUtility.Editor
 {
     public static class SceneNameCreator
     {
-        private const string CommandName = "Tools/Create/Scene Name";
-        private const string FilePath = "Assets/SceneName.cs";
-        private const string Comment = "シーン名を定数で管理するクラス";
+        private const string CommandName = "Tools/Create/Scene Name Class";
 
         [MenuItem(CommandName)]
         public static void Create()
         {
+            ConstantClassSetting setting = AwnUtilityEditorSettings.instance.sceneNameClass;
             ConstantClassCreator.Create<string>(
-                FilePath,
+                setting.filePath,
                 EditorBuildSettings.scenes
                     .Select(c => Path.GetFileNameWithoutExtension(c.path))
                     .Distinct()
@@ -28,7 +27,7 @@ namespace AwnUtility.Editor
                             $"\"{scene}\""
                         )
                     ),
-                Comment);
+                setting.comment);
         }
 
         [MenuItem(CommandName, true)]

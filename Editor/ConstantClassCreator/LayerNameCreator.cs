@@ -10,21 +10,20 @@ namespace AwnUtility.Editor
 {
     public static class LayerNameCreator
     {
-        private const string CommandName = "Tools/Create/Layer Name";
-        private const string FilePath = "Assets/LayerName.cs";
-        private const string Comment = "レイヤー名を定数で管理するクラス";
-
+        private const string CommandName = "Tools/Create/Layer Name Class";
         [MenuItem(CommandName)]
         public static void Create()
         {
+            ConstantClassSetting setting = AwnUtilityEditorSettings.instance.layerNameClass;
             ConstantClassCreator.Create<int>(
-                FilePath,
+                setting.filePath,
                 InternalEditorUtility.layers.Select(layer =>
                     new ConstantClassCreator.ConstantField(
                         layer,
                         LayerMask.NameToLayer(layer).ToString()
                     )
-                ), Comment);
+                ),
+                setting.comment);
         }
 
         [MenuItem(CommandName, true)]
