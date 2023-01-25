@@ -14,16 +14,22 @@ namespace AwnUtility.Editor
         [MenuItem(CommandName)]
         public static void Create()
         {
-            ConstantClassSetting setting = AwnUtilityEditorSettings.instance.layerNameClass;
-            ConstantClassCreator.Create<int>(
-                setting.filePath,
-                InternalEditorUtility.layers.Select(layer =>
-                    new ConstantClassCreator.ConstantField(
-                        layer,
-                        LayerMask.NameToLayer(layer).ToString()
-                    )
-                ),
-                setting.comment);
+            AwnUtilityEditorSettings settings = AwnUtilityEditorSettings.instance;
+            ConstantClassSetting classSetting = settings.layerNameClass;
+            var constantClass = new ConstantClassCreator(classSetting.className, classSetting.comment);
+
+            InternalEditorUtility.layers.ForEach(
+                layerName =>
+                constantClass.AddConstantField<int>(layerName,LayerMask.NameToLayer(layerName).ToString())
+            );
+            if(settings.includeLayerMask)
+            {
+                InternalEditorUtility.layers.ForEach(
+                    layerName =>
+                    constantClass.AddConstantField<int>(layerName + settings.layerMaskSuffix, (1 << LayerMask.NameToLayer(layerName)).ToString())
+                );
+            }
+            constantClass.Create(settings.constantClassPath);
         }
 
         [MenuItem(CommandName, true)]

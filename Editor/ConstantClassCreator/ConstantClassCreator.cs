@@ -9,47 +9,49 @@ using UnityEngine;
 
 namespace AwnUtility.Editor
 {
-    /// <summary>
-    /// 定数をメンバーに持つ静的クラスを生成するクラス
-    /// </summary>
-    public static class ConstantClassCreator
+    public class ConstantClassCreator
     {
-        public struct ConstantField
+        private string className, comment;
+        private List<ConstantField> fields = new();
+        public ConstantClassCreator(string className, string comment)
         {
-            public ConstantField(string unformattedIdentifier, string value)
+            this.className = className;
+            this.comment = comment;
+        }
+
+        internal struct ConstantField
+        {
+            internal ConstantField(Type type, string unformattedIdentifier, string value)
             {
+                this.type = type;
                 this.identifier = TrimForIdentifier(unformattedIdentifier);
                 this.value = value;
             }
-            public string identifier;
-            public string value;
+            internal Type type;
+            internal string identifier;
+            internal string value;
         }
-        private static readonly string[] InvalidCharacters =
+        public ConstantClassCreator AddConstantField<TValue>(string unformattedIdentifier, string value)
         {
-            " ", "!", "\"", "#", "$",
-            "%", "&", "\'", "(", ")",
-            "-", "=", "^",  "~", "\\",
-            "|", "[", "{",  "@", "`",
-            "]", "}", ":",  "*", ";",
-            "+", "/", "?",  ".", ">",
-            ",", "<"
-        };
-        private static readonly string Indent = "    ";
+            fields.Add(new ConstantField(typeof(TValue), unformattedIdentifier, value));
+            return this;
+        }
 
-        public static void Create<TValue>(string path, IEnumerable<ConstantField> fields, string comment = null)
+        public void Create(string filePath)
         {
-            string directoryName = Path.GetDirectoryName(path);
+            string directoryName = Path.GetDirectoryName(filePath);
             if(!Directory.Exists(directoryName))
                 Directory.CreateDirectory(directoryName);
             
             File.WriteAllText(
-                path,
-                CreateScript<TValue>(Path.GetFileNameWithoutExtension(path), fields, comment),
+                filePath + className + ".cs",
+                CreateScript(),
                 Encoding.UTF8
                 );
             AssetDatabase.Refresh(ImportAssetOptions.ImportRecursive);
         }
-        public static string CreateScript<TValue>(string className, IEnumerable<ConstantField> fields, string comment = null)
+
+        public string CreateScript()
         {
             var builder = new StringBuilder();
 
@@ -65,14 +67,13 @@ namespace AwnUtility.Editor
                 .AppendFormat("public static class {0}", className).AppendLine()
                 .AppendLine("{");
 
-            string typeName = typeof(TValue).FullName;
             foreach(var field in fields)
             {
                 builder
                     .Append(Indent)
                     .AppendFormat(
                         @"public const {0} {1} = {2};",
-                        typeName,
+                        field.type.FullName,
                         field.identifier,
                         field.value)
                     .AppendLine();
@@ -82,15 +83,26 @@ namespace AwnUtility.Editor
             return builder.ToString();
         }
 
-        public static bool CanCreate()
+        private static readonly string[] InvalidCharacters =
         {
-            return !EditorApplication.isPlaying && !Application.isPlaying && !EditorApplication.isCompiling;
-        }
-
+            " ", "!", "\"", "#", "$",
+            "%", "&", "\'", "(", ")",
+            "-", "=", "^",  "~", "\\",
+            "|", "[", "{",  "@", "`",
+            "]", "}", ":",  "*", ";",
+            "+", "/", "?",  ".", ">",
+            ",", "<"
+        };
+        private static readonly string Indent = "    ";
         public static string TrimForIdentifier(string str)
         {
             Array.ForEach(InvalidCharacters, ic => str = str.Replace(ic, string.Empty));
             return str;
         }
+        public static bool CanCreate()
+        {
+            return !EditorApplication.isPlaying && !Application.isPlaying && !EditorApplication.isCompiling;
+        }
     }
+
 }

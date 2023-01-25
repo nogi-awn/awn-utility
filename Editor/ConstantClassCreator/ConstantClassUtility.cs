@@ -15,7 +15,6 @@ namespace AwnUtility.Editor
         public static void Create()
         {
             LayerNameCreator.Create();
-            LayerMaskNameCreator.Create();
             SceneNameCreator.Create();
             TagNameCreator.Create();
         }
