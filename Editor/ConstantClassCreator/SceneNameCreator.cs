@@ -16,18 +16,15 @@ namespace AwnUtility.Editor
         public static void Create()
         {
             ConstantClassSetting setting = AwnUtilityEditorSettings.instance.sceneNameClass;
-            ConstantClassCreator.Create<string>(
-                setting.filePath,
-                EditorBuildSettings.scenes
-                    .Select(c => Path.GetFileNameWithoutExtension(c.path))
-                    .Distinct()
-                    .Select(scene => 
-                        new ConstantClassCreator.ConstantField(
-                            scene,
-                            $"\"{scene}\""
-                        )
-                    ),
-                setting.comment);
+            var constantClass = new ConstantClassCreator(setting.className, setting.comment);
+
+            EditorBuildSettings.scenes
+                .Select(c => Path.GetFileNameWithoutExtension(c.path))
+                .Distinct()
+                .ForEach(
+                    sceneName => constantClass.AddConstantField<string>(sceneName, $"\"{sceneName}\"")
+                );
+            constantClass.Create(AwnUtilityEditorSettings.instance.constantClassPath);
         }
 
         [MenuItem(CommandName, true)]

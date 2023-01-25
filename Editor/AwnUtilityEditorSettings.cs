@@ -19,6 +19,7 @@ namespace AwnUtility.Editor
         public string comment;
 
         public string filePath => AwnUtilityEditorSettings.instance.constantClassPath + className + ".cs";
+        public string folderPath => AwnUtilityEditorSettings.instance.constantClassPath;
     }
 
     [FilePath("ProjectSettings/AwnUtilitySettings.asset", FilePathAttribute.Location.ProjectFolder)]
@@ -28,9 +29,12 @@ namespace AwnUtility.Editor
         public string constantClassPath = @"Assets/";
         public ConstantClassSetting
             layerNameClass = new ConstantClassSetting("LayerName", "レイヤー名を定数で管理するクラス"),
-            layerMaskNameClass = new ConstantClassSetting("LayerMaskName", "レイヤーマスク名を定数で管理するクラス"),
             sceneNameClass = new ConstantClassSetting("SceneName", "シーン名を定数で管理するクラス"),
             tagNameClass = new ConstantClassSetting("TagName", "タグ名を定数で管理するクラス");
+        
+        public bool includeLayerMask = true;
+        public string layerMaskSuffix = "Mask";
+
         
         public void Save()
         {

@@ -16,15 +16,13 @@ namespace AwnUtility.Editor
         public static void Create()
         {
             ConstantClassSetting setting = AwnUtilityEditorSettings.instance.tagNameClass;
-            ConstantClassCreator.Create<string>(
-                setting.filePath,
-                InternalEditorUtility.tags.Select(tag =>
-                    new ConstantClassCreator.ConstantField(
-                        tag,
-                        $"\"{tag}\""
-                    )
-                ), 
-                setting.comment);
+            var constantClass = new ConstantClassCreator(setting.className, setting.comment);
+
+            InternalEditorUtility.tags
+                .ForEach(
+                    tagName => constantClass.AddConstantField<string>(tagName, $"\"{tagName}\"")
+                );
+            constantClass.Create(AwnUtilityEditorSettings.instance.constantClassPath);
         }
 
         [MenuItem(CommandName, true)]
