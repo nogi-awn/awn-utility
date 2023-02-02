@@ -54,7 +54,7 @@ namespace AwnUtility
             from.transitions.Add(triggerId, to);
         }
 
-        public void PullTrigger(int triggerId)
+        public void Trigger(int triggerId)
         {
             State to;
             if(!currentState.transitions.TryGetValue(triggerId, out to))
@@ -101,8 +101,8 @@ namespace AwnUtility
         private void ChangeState(State nextState)
         {
             currentState.Exit(nextState);
-            currentState.Enter(nextState);
             currentState = nextState;
+            currentState.Enter(nextState);
         }
     }
 }
